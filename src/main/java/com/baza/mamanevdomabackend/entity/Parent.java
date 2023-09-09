@@ -20,7 +20,8 @@ public class Parent {
     private List<Child> children;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<CareSchedule> schedules;
-
     @OneToMany(mappedBy = "owner")
     private List<ChildrenGroup> groups;
+    @OneToOne(mappedBy = "parent")
+    private Location location;
 }

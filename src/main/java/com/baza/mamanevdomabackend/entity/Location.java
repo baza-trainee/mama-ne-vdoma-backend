@@ -12,6 +12,7 @@ public class Location {
     private String address;
     private Integer radius;
     @OneToOne
+    @JoinColumn(name = "parent_id", referencedColumnName = "id")
     private Parent parent;
     private Double latitude;
     private Double longitude;
