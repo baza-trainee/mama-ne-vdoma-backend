@@ -2,14 +2,16 @@ package com.baza.mamanevdomabackend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.Data;
 
 import java.util.List;
-
+@Data
 @Entity(name = "parents")
 public class Parent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String login;
     @Email
     private String email;
@@ -22,6 +24,6 @@ public class Parent {
     private List<CareSchedule> schedules;
     @OneToMany(mappedBy = "owner")
     private List<ChildrenGroup> groups;
-    @OneToOne(mappedBy = "parent")
+    @ManyToOne
     private Location location;
 }

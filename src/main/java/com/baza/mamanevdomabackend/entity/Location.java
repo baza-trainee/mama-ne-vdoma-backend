@@ -2,6 +2,8 @@ package com.baza.mamanevdomabackend.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity(name = "location")
 public class Location {
     @Id
@@ -11,9 +13,8 @@ public class Location {
     private String city;
     private String address;
     private Integer radius;
-    @OneToOne
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
-    private Parent parent;
+    @OneToMany(mappedBy = "location")
+    private List<Parent> parents;
     private Double latitude;
     private Double longitude;
 }
