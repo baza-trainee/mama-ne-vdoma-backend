@@ -12,7 +12,7 @@ public class Parent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    private String login;
+    private String username;
     @Email
     private String email;
     private String password;

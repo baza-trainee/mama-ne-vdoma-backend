@@ -11,6 +11,6 @@ public interface ParentRepository extends CrudRepository<Parent, Long> {
 
     Optional<Parent> findByEmail(String email);
 
-    Optional<Parent> findByLogin(String login);
+    Optional<Parent> findByUsername(String username);
 
 }

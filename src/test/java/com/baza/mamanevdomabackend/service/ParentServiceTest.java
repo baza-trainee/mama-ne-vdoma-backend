@@ -30,20 +30,19 @@ public class ParentServiceTest {
     private final Parent expectedParent = new Parent();
 
     private static final String TEST_EMAIL = "test@gmail.com";
-    private static final String TEST_LOGIN = "testLogin123";
+    private static final String TEST_USERNAME = "testUsername123";
 
     @Before
-    public void initMocks() {
-        MockitoAnnotations.openMocks(this);
+    public void initMocks() throws Exception {
+        MockitoAnnotations.openMocks(this).close();
 
         expectedParent.setEmail(TEST_EMAIL);
-        expectedParent.setLogin(TEST_LOGIN);
     }
 
     @Test
     public void testFindParentByEmail() {
         when(parentRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.of(expectedParent));
-        Parent actualParent = parentService.findParentByLoginOrEmail(TEST_EMAIL);
+        Parent actualParent = parentService.findParentByEmail(TEST_EMAIL);
 
         assertEquals(actualParent, expectedParent);
     }
@@ -52,23 +51,22 @@ public class ParentServiceTest {
     public void testFindParentByEmailNotFound() {
         when(parentRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(ParentNotFoundException.class, () -> parentService.findParentByLoginOrEmail(""));
+        assertThrows(ParentNotFoundException.class, () -> parentService.findParentByEmail(""));
     }
 
-
     @Test
-    public void testFindParentByLogin() {
-        when(parentRepository.findByLogin(TEST_LOGIN)).thenReturn(Optional.of(expectedParent));
-        Parent actualParent = parentService.findParentByLoginOrEmail(TEST_LOGIN);
+    public void testFindParentByUsername() {
+        when(parentRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(expectedParent));
+        Parent actualParent = parentService.findParentByUsername(TEST_USERNAME);
 
         assertEquals(actualParent, expectedParent);
     }
 
     @Test
-    public void testFindParentByLoginNotFound() {
-        when(parentRepository.findByLogin(anyString())).thenReturn(Optional.empty());
+    public void testFindParentByUsernameNotFound() {
+        when(parentRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(ParentNotFoundException.class, () -> parentService.findParentByLoginOrEmail(""));
+        assertThrows(ParentNotFoundException.class, () -> parentService.findParentByUsername(""));
     }
 
 }
