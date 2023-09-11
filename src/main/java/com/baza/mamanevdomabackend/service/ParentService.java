@@ -6,20 +6,21 @@ import com.baza.mamanevdomabackend.repository.ParentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ParentService {
 
     @Autowired
     private ParentRepository parentRepository;
 
-    public Parent findByEmail(String email) {
-        return parentRepository.findByEmail(email)
-                .orElseThrow(() -> new ParentNotFoundException("Parent not found with this email: " + email));
+    public Parent findParentByLoginOrEmail(String email) {
+        Optional<Parent> parent = parentRepository.findByEmail(email);
+        if (parent.isEmpty()) {
+            return parentRepository.findByLogin(email)
+                    .orElseThrow(() -> new ParentNotFoundException("Parent not found with this email: " + email));
+        } else {
+            return parent.get();
+        }
     }
-
-    public Parent findByLogin(String login) {
-        return parentRepository.findByLogin(login)
-                .orElseThrow(() -> new ParentNotFoundException("Parent not found with this login: " + login));
-    }
-
 }

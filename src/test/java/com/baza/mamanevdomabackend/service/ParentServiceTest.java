@@ -43,7 +43,7 @@ public class ParentServiceTest {
     @Test
     public void testFindParentByEmail() {
         when(parentRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.of(expectedParent));
-        Parent actualParent = parentService.findByEmail(TEST_EMAIL);
+        Parent actualParent = parentService.findParentByLoginOrEmail(TEST_EMAIL);
 
         assertEquals(actualParent, expectedParent);
     }
@@ -52,14 +52,14 @@ public class ParentServiceTest {
     public void testFindParentByEmailNotFound() {
         when(parentRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(ParentNotFoundException.class, () -> parentService.findByEmail(""));
+        assertThrows(ParentNotFoundException.class, () -> parentService.findParentByLoginOrEmail(""));
     }
 
 
     @Test
     public void testFindParentByLogin() {
         when(parentRepository.findByLogin(TEST_LOGIN)).thenReturn(Optional.of(expectedParent));
-        Parent actualParent = parentService.findByLogin(TEST_LOGIN);
+        Parent actualParent = parentService.findParentByLoginOrEmail(TEST_LOGIN);
 
         assertEquals(actualParent, expectedParent);
     }
@@ -68,7 +68,7 @@ public class ParentServiceTest {
     public void testFindParentByLoginNotFound() {
         when(parentRepository.findByLogin(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(ParentNotFoundException.class, () -> parentService.findByLogin(""));
+        assertThrows(ParentNotFoundException.class, () -> parentService.findParentByLoginOrEmail(""));
     }
 
 }
