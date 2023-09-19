@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface ParentRepository extends CrudRepository<Parent, Long> {
-
     Optional<Parent> findByEmail(String email);
 
     Optional<Parent> findByUsername(String username);
 
+    Boolean existsByEmail(String email);
 }
