@@ -2,10 +2,17 @@ package com.baza.mamanevdomabackend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "parents")
 public class Parent {
     @Id
@@ -18,6 +25,7 @@ public class Parent {
     private String password;
     private Long likes;
     private Long dislikes;
+    private boolean isEnabled;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Child> children;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
