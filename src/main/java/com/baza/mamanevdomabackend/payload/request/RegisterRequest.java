@@ -1,9 +1,9 @@
-package com.baza.mamanevdomabackend.dto;
+package com.baza.mamanevdomabackend.payload.request;
 
 import lombok.Getter;
 
 @Getter
-public class RegisterDto {
+public class RegisterRequest {
     private String email;
     private String username;
     private String password;

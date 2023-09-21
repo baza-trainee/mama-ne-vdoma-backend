@@ -1,9 +1,9 @@
-package com.baza.mamanevdomabackend.dto;
+package com.baza.mamanevdomabackend.payload.request;
 
 import lombok.Getter;
 
 @Getter
-public class LoginDto {
+public class LoginRequest {
     private String email;
     private String password;
 }
