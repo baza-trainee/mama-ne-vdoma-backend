@@ -1,13 +1,15 @@
 package com.baza.mamanevdomabackend.service;
 
-import com.baza.mamanevdomabackend.dto.LoginDto;
-import com.baza.mamanevdomabackend.dto.RegisterDto;
 import com.baza.mamanevdomabackend.entity.ConfirmationToken;
 import com.baza.mamanevdomabackend.entity.Parent;
-import com.baza.mamanevdomabackend.exception.APIException;
+import com.baza.mamanevdomabackend.exception.UserExistException;
 import com.baza.mamanevdomabackend.exception.VerifyEmailException;
+import com.baza.mamanevdomabackend.payload.request.LoginRequest;
+import com.baza.mamanevdomabackend.payload.request.RegisterRequest;
+import com.baza.mamanevdomabackend.payload.response.MessageResponse;
 import com.baza.mamanevdomabackend.repository.ConfirmationTokenRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +25,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
@@ -32,50 +35,51 @@ public class AuthService {
     private final ConfirmationTokenRepository tokenRepository;
 
 
-    public String login(LoginDto loginDto) {
-        Parent parent = parentService.findParentByEmail(loginDto.getEmail());
+    public MessageResponse login(LoginRequest loginRequest) {
+        Parent parent = parentService.findParentByEmail(loginRequest.getEmail());
 
         if (parent.isEnabled()) {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginDto.getEmail(),
-                            loginDto.getPassword())
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword())
             );
 
+            log.info("logging with [{}]", authentication.getPrincipal());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return "User login successfully!";
+
+            return new MessageResponse("User login successfully!");
         }
 
         throw new VerifyEmailException("Please verify email");
     }
 
-    public String register(RegisterDto registerDto) {
-        if (parentService.existsByEmail(registerDto.getEmail())) {
-            throw new APIException("Email is already exist!");
+    public MessageResponse register(RegisterRequest registerRequest) {
+        if (parentService.existsByEmail(registerRequest.getEmail())) {
+            throw new UserExistException("Email is already exist!");
         }
 
         Parent parent = Parent.builder()
-                .email(registerDto.getEmail())
-                .username(registerDto.getUsername())
-                .password(passwordEncoder.encode(registerDto.getPassword()))
+                .email(registerRequest.getEmail())
+                .nickname(registerRequest.getUsername())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .isEnabled(false)
                 .build();
 
         parentService.create(parent);
         sendEmailToUser(parent);
 
-        return "Verify email by the link sent on your email address";
+        return new MessageResponse("Verify email by the link sent on your email address");
     }
 
-    public String confirmEmail(String confirmationToken) {
+    public MessageResponse confirmEmail(String confirmationToken) {
         Optional<ConfirmationToken> tokenOptional = tokenRepository.findByConfirmationToken(confirmationToken);
 
         if (tokenOptional.isPresent()) {
             Parent parent = parentService.findParentByEmail(tokenOptional.get().getParent().getEmail());
-            parent.setEnabled(true);
-            parentService.update(parent);
+            parentService.updateIsEnabledByParentEmail(true, parent.getEmail());
 
-            return "Email verified successfully!";
+            return new MessageResponse("Email verified successfully!");
         }
 
         throw new VerifyEmailException("Error: Couldn't verify email");
@@ -97,6 +101,6 @@ public class AuthService {
                 + "http://localhost:8080/api/auth/confirm-account?token=" + confirmationToken.getConfirmationToken());
         new Thread(() -> emailService.sendEmail(mailMessage)).start();
 
-        System.out.println("Confirmation Token: " + confirmationToken.getConfirmationToken());
+        log.debug("Confirmation token: {}", confirmationToken.getConfirmationToken());
     }
 }
