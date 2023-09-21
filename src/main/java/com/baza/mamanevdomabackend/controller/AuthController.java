@@ -3,7 +3,6 @@ package com.baza.mamanevdomabackend.controller;
 import com.baza.mamanevdomabackend.dto.LoginDto;
 import com.baza.mamanevdomabackend.dto.RegisterDto;
 import com.baza.mamanevdomabackend.service.AuthService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,16 +18,16 @@ public class AuthController {
 
     @PostMapping({"/register", "/sign-up"})
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
-        return new ResponseEntity<>(authService.register(registerDto), HttpStatus.OK);
+        return ResponseEntity.ok(authService.register(registerDto));
     }
 
     @PostMapping({"/login", "sign-in"})
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-        return new ResponseEntity<>(authService.login(loginDto), HttpStatus.OK);
+        return ResponseEntity.ok(authService.login(loginDto));
     }
 
     @PostMapping(value = "/confirm-account")
     public ResponseEntity<String> confirmUserAccount(@RequestParam("token") String confirmationToken) {
-        return new ResponseEntity<>(authService.confirmEmail(confirmationToken), HttpStatus.OK);
+        return ResponseEntity.ok(authService.confirmEmail(confirmationToken));
     }
 }
