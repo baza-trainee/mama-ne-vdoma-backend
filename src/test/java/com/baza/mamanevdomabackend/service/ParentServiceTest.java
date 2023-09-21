@@ -56,17 +56,17 @@ public class ParentServiceTest {
 
     @Test
     public void testFindParentByUsername() {
-        when(parentRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(expectedParent));
-        Parent actualParent = parentService.findParentByUsername(TEST_USERNAME);
+        when(parentRepository.findByNickname(TEST_USERNAME)).thenReturn(Optional.of(expectedParent));
+        Parent actualParent = parentService.findParentByNickname(TEST_USERNAME);
 
         assertEquals(actualParent, expectedParent);
     }
 
     @Test
     public void testFindParentByUsernameNotFound() {
-        when(parentRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+        when(parentRepository.findByNickname(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(ParentNotFoundException.class, () -> parentService.findParentByUsername(""));
+        assertThrows(ParentNotFoundException.class, () -> parentService.findParentByNickname(""));
     }
 
 }
