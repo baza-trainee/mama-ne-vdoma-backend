@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ParentRepository extends CrudRepository<Parent, Long> {
     Optional<Parent> findByEmail(String email);
 
-    Optional<Parent> findByUsername(String username);
+    Optional<Parent> findByNickname(String nickname);
 
     Boolean existsByEmail(String email);
 
