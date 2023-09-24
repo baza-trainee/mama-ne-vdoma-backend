@@ -6,8 +6,11 @@ import com.baza.mamanevdomabackend.exception.UserExistException;
 import com.baza.mamanevdomabackend.exception.VerifyEmailException;
 import com.baza.mamanevdomabackend.payload.request.LoginRequest;
 import com.baza.mamanevdomabackend.payload.request.RegisterRequest;
+import com.baza.mamanevdomabackend.payload.response.JWTTokenSuccessResponse;
 import com.baza.mamanevdomabackend.payload.response.MessageResponse;
 import com.baza.mamanevdomabackend.repository.ConfirmationTokenRepository;
+import com.baza.mamanevdomabackend.security.JWTTokenProvider;
+import com.baza.mamanevdomabackend.security.SecurityConstants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -33,9 +36,10 @@ public class AuthService {
     private final ParentService parentService;
     private final PasswordEncoder passwordEncoder;
     private final ConfirmationTokenRepository tokenRepository;
+    private final JWTTokenProvider jwtTokenProvider;
 
 
-    public MessageResponse login(LoginRequest loginRequest) {
+    public JWTTokenSuccessResponse login(LoginRequest loginRequest) {
         Parent parent = parentService.findParentByEmail(loginRequest.getEmail());
 
         if (parent.isEnabled()) {
@@ -44,11 +48,10 @@ public class AuthService {
                             loginRequest.getEmail(),
                             loginRequest.getPassword())
             );
-
-            log.info("logging with [{}]", authentication.getPrincipal());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            return new MessageResponse("User login successfully!");
+            String jwt = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider.generateToken(authentication);
+            log.info("logging with [{}]", authentication.getPrincipal());
+            return new JWTTokenSuccessResponse(true, jwt);
         }
 
         throw new VerifyEmailException("Please verify email");

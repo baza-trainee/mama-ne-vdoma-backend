@@ -2,9 +2,9 @@ package com.baza.mamanevdomabackend.controller;
 
 import com.baza.mamanevdomabackend.payload.request.LoginRequest;
 import com.baza.mamanevdomabackend.payload.request.RegisterRequest;
+import com.baza.mamanevdomabackend.payload.response.JWTTokenSuccessResponse;
 import com.baza.mamanevdomabackend.payload.response.MessageResponse;
 import com.baza.mamanevdomabackend.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping({"/login", "sign-in"})
-    public ResponseEntity<MessageResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JWTTokenSuccessResponse> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
