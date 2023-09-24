@@ -77,4 +77,8 @@ public class Parent implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public boolean isConfirmedEmail() {
+        return isEnabled;
+    }
 }

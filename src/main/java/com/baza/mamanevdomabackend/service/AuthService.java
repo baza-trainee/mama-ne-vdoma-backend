@@ -42,7 +42,7 @@ public class AuthService {
     public JWTTokenSuccessResponse login(LoginRequest loginRequest) {
         Parent parent = parentService.findParentByEmail(loginRequest.getEmail());
 
-        if (parent.isEnabled()) {
+        if (parent.isConfirmedEmail()) {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(),
