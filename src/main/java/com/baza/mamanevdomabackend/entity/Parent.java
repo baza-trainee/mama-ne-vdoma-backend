@@ -43,6 +43,8 @@ public class Parent implements UserDetails {
     private List<ChildrenGroup> groups;
     @ManyToOne
     private Location location;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Image image;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
